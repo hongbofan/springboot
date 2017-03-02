@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.AccountInfoDao">
+    <resultMap id="BaseResultMap" type="com.example.entity.AccountInfo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="shop_id" property="shopId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="SMALLINT"/>
+        <result column="total_amount" property="totalAmount" jdbcType="NUMERIC"/>
+        <result column="back_money" property="backMoney" jdbcType="NUMERIC"/>
+        <result column="balance_amount" property="balanceAmount" jdbcType="NUMERIC"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, shop_id, status, total_amount, balance_amount, create_time, update_time,back_money
+  </sql>
+    <select id="selectByShopId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from shop.t_account_info
+        where shop_id = #{shopId}
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from shop.t_account_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 根据shop_id 查询账号信息-->
+    <select id="getAccountInfo" parameterType="java.lang.String" resultType="com.example.entity.AccountInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from shop.t_account_info
+        WHERE shop_id = #{shopId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from shop.t_account_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.example.entity.AccountInfo">
+    insert into shop.t_account_info (id, shop_id, status,
+      total_amount, balance_amount, create_time,
+      update_time,back_money)
+    values (#{id,jdbcType=BIGINT}, #{shopId,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
+      #{totalAmount,jdbcType=NUMERIC}, #{balanceAmount,jdbcType=NUMERIC}, #{createTime,jdbcType=DATE},
+      #{updateTime,jdbcType=DATE},#{backMoney,jdbcType=NUMERIC})
+  </insert>
+    <insert id="insertSelective" parameterType="com.example.entity.AccountInfo">
+        insert into shop.t_account_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="totalAmount != null">
+                total_amount,
+            </if>
+            <if test="balanceAmount != null">
+                balance_amount,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="backMoney != null">
+                back_money,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="totalAmount != null">
+                #{totalAmount,jdbcType=NUMERIC},
+            </if>
+            <if test="balanceAmount != null">
+                #{balanceAmount,jdbcType=NUMERIC},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="backMoney != null">
+                #{backMoney,jdbcType=NUMERIC},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.AccountInfo">
+        update shop.t_account_info
+        <set>
+            <if test="shopId != null">
+                shop_id = #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=NUMERIC},
+            </if>
+            <if test="balanceAmount != null">
+                balance_amount = #{balanceAmount,jdbcType=NUMERIC},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="backMoney != null">
+                back_money = #{backMoney,jdbcType=NUMERIC},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.AccountInfo">
+    update shop.t_account_info
+    set shop_id = #{shopId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      total_amount = #{totalAmount,jdbcType=NUMERIC},
+      balance_amount = #{balanceAmount,jdbcType=NUMERIC},
+      create_time = #{createTime,jdbcType=DATE},
+      update_time = #{updateTime,jdbcType=DATE},
+      back_money = #{backMoney,jdbcType=NUMERIC}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
