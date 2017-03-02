@@ -2,6 +2,7 @@ package com.example.dao;
 
 import com.example.entity.AccountInfo;
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 
@@ -19,6 +20,7 @@ public interface AccountInfoDao {
 
     int updateByPrimaryKey(AccountInfo record);
 
+    @Cacheable
     AccountInfo selectByShopId(@Param("shopId")String shopId);
 
 }
