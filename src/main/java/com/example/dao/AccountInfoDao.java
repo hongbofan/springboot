@@ -20,7 +20,7 @@ public interface AccountInfoDao {
 
     int updateByPrimaryKey(AccountInfo record);
 
-    @Cacheable
+    @Cacheable(value = "selectByShopId")
     AccountInfo selectByShopId(@Param("shopId")String shopId);
 
 }

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * Created by yfmacmini001 on 2017/2/6.
  */
 @Document(collection = "protectType")
-public class ProtectType implements Serializable{
+public class ProtectType {
 
     @Id
     private String id;

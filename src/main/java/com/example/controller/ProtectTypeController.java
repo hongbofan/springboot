@@ -1,8 +1,6 @@
 package com.example.controller;
 
-import com.example.Util.RedisUtil;
 import com.example.Util.Result;
-import com.example.entity.ProtectType;
 import com.example.service.ProtectTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProtectTypeController {
     @Autowired
     private ProtectTypeService protectTypeService;
-    @Autowired
-    private RedisUtil redisUtil;
     @RequestMapping(value = "findAll",method = RequestMethod.GET)
     public Result findAll(){
-        redisUtil.set("1",new ProtectType());
         return protectTypeService.findAll();
     }
 }

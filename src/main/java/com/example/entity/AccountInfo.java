@@ -2,10 +2,14 @@ package com.example.entity;
 
 import org.apache.ibatis.type.Alias;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class AccountInfo {
+public class AccountInfo implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     private String shopId;
