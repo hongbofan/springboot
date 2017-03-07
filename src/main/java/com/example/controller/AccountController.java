@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.example.Util.Result;
 import com.example.service.AccountInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     @Autowired
     private AccountInfoService accountInfoService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @RequestMapping(value = "findByShopId",method = RequestMethod.GET)
     public Result findByShopId(@RequestParam("shopId")String shopId){
