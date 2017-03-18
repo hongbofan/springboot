@@ -29,6 +29,8 @@ public class HelloServer {
     //程序初始方法入口注解，提示spring这个程序先执行这里
     @PostConstruct
     public void serverStart() throws InterruptedException{
+
+        log.info("###########################################");
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -45,7 +47,10 @@ public class HelloServer {
             log.info("###########################################");
             // 可以简写为
              /* b.bind(portNumber).sync().channel().closeFuture().sync(); */
-        } finally {
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }

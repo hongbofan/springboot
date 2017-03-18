@@ -49,7 +49,7 @@ public class HelloServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-        System.out.println("RamoteAddress : " + ctx.channel().remoteAddress() + " active !");
+        System.out.println("RemoteAddress : " + ctx.channel().remoteAddress() + " active !");
 
         ctx.writeAndFlush( "Welcome to " + InetAddress.getLocalHost().getHostName() + " service!\n");
 
@@ -57,7 +57,7 @@ public class HelloServerHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
         // 收到消息直接打印输出
         System.out.println(channelHandlerContext.channel().remoteAddress() + " Say : " + s);
 

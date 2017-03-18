@@ -1,36 +1,35 @@
 <html>
-<head><title></title></head>
+<head>
+    <title>Title</title>
+</head>
 <body>
-<script type="text/javascript">
-    var socket;
-    if (!window.WebSocket) {
-        window.WebSocket = window.MozWebSocket;
+<h4 id="socket" class="text-center">
+    11
+</h4>
+</body>
+<script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/sockjs-client/1.1.1/sockjs.min.js"></script>
+<script src="//cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    $(document).ready(function (){
+        connect();
+    });
+    var stompClient = null;
+    function connect() {
+        var socket = new SockJS('ws://localhost:8443');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            sendName();
+            stompClient.subscribe('/subscribe/cipher', function (greeting) {
+                $("#socket").html(greeting.body);
+            });
+        });
     }
-    if (window.WebSocket) {
-        socket = new WebSocket("ws://localhost:7878/");
-        socket.onmessage = function(event) {
-            console.log(event.data);
-        };
-        socket.onopen = function(event) {
-            console.log("websocket 打开了");
-        };
-        socket.onclose = function(event) {
-            console.log("websocket 关闭了");
-        };
-    }
-
-    function send(message) {
-        if (!window.WebSocket) { return; }
-        if (socket.readyState == WebSocket.OPEN) {
-            socket.send(message);
-        } else {
-            alert("The socket is not open.");
-        }
+    function sendName() {
+        stompClient.send("/webSocket/request", {}, JSON.stringify({
+            'name':'hongbofan'
+        }));
     }
 </script>
-<form onsubmit="return false;">
-    <input type="text" name="message" value="Hello, World!"/>
-    <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)" />
-</form>
-</body>
 </html>
