@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.util.SafeEncoder;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -16,100 +20,191 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisUtil{
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-    /**
-     * 批量删除对应的value
-     *
-     * @param keys
-     */
-    public  void remove(final String... keys) {
-        for (String key : keys) {
-            remove(key);
-        }
-    }
+    @Resource
+    private JedisPool redisPool;
 
-    /**
-     * 批量删除key
-     *
-     * @param pattern
-     */
-    public void removePattern(final String pattern) {
-        Set<Serializable> keys = redisTemplate.keys(pattern);
-        if (keys.size() > 0)
-            redisTemplate.delete(keys);
-    }
-
-    /**
-     * 删除对应的value
-     *
-     * @param key
-     */
-    public void remove(final String key) {
-        if (exists(key)) {
-            redisTemplate.delete(key);
-        }
-    }
-
-    /**
-     * 判断缓存中是否有对应的value
-     *
-     * @param key
-     * @return
-     */
-    public boolean exists(final String key) {
-        return redisTemplate.hasKey(key);
-    }
-
-    /**
-     * 读取缓存
-     *
-     * @param key
-     * @return
-     */
-    public Object get(final String key) {
-        Object result = null;
-        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        result = operations.get(key);
-        return result;
-    }
-
-    /**
-     * 写入缓存
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public boolean set(final String key, Object value) {
-        boolean result = false;
+    public Long setnx(String key,String value) {
+        Jedis redis = null;
         try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(key, value);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+            redis = redisPool.getResource();
+            return redis.setnx(key, value);
+        } finally {
+            redis.close();
         }
-        return result;
     }
 
-    /**
-     * 写入缓存
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public boolean set(final String key, Object value, Long expireTime) {
-        boolean result = false;
+    public Set<String> getKeys(String key) {
+        Jedis redis = null;
         try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(key, value);
-            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+            redis = redisPool.getResource();
+            return redis.keys(key);
+        } finally {
+            redis.close();
         }
-        return result;
+    }
+
+    public boolean unLock(String key){
+        return delete(key) != null;
+    }
+
+    public boolean checkLock(String key, int second) {
+
+        String lockKey = "lock:" + key;
+        try {
+            // 1表示之前不存在，设置成功
+            if (setnx(lockKey, "lock") == 1) {
+                // 设置有限期
+                expire(lockKey, second);
+                return true;
+            } else {
+                // 50毫秒的延迟，避免过多请求
+                try {
+                    Thread.sleep(50L);
+                } catch (InterruptedException e) {
+                }
+                return false;
+            }
+
+        } catch (Exception e) {
+            return true;
+        }
+    }
+    public Object set(String key, int expire, String value) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            String msg = redis.set(SafeEncoder.encode(key), SafeEncoder.encode(value));
+            if (msg.equals("OK")) {
+                return redis.expire(SafeEncoder.encode(key), expire);
+            } else {
+                return msg;
+            }
+        } finally {
+            redis.close();
+        }
+
+    }
+
+    public String setex(String key, int seconds, String value) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            String setex = redis.setex(key, seconds, value);
+            return setex;
+        } finally {
+            redis.close();
+        }
+
+    }
+    public Object set(String key, int expire, byte[] value) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            String msg = redis.set(SafeEncoder.encode(key), value);
+            if (msg.equals("OK")) {
+                return redis.expire(SafeEncoder.encode(key), expire);
+            } else {
+                return msg;
+            }
+        } finally {
+            redis.close();
+        }
+    }
+
+    public Object append(String key, String value) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.append(SafeEncoder.encode(key), SafeEncoder.encode(value));
+        } finally {
+            redis.close();
+        }
+    }
+
+    public Object append(String key, byte[] value) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.append(SafeEncoder.encode(key), value);
+        } finally {
+            redis.close();
+        }
+    }
+
+    public long incr(String key, long by) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.incrBy(SafeEncoder.encode(key), by);
+        } finally {
+            redis.close();
+        }
+    }
+    public long decr(String key, long by) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.decrBy(SafeEncoder.encode(key), by);
+        } finally {
+            redis.close();
+        }
+    }
+
+    public String getString(String key) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            byte[] result = redis.get(SafeEncoder.encode(key));
+            if (null != result) {
+                return SafeEncoder.encode(result);
+            } else {
+                return null;
+            }
+        } finally {
+            redis.close();
+        }
+    }
+
+    public byte[] getBinary(String key) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.get(SafeEncoder.encode(key));
+        } finally {
+            redis.close();
+        }
+    }
+
+    public Object delete(String key) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.del(SafeEncoder.encode(key));
+        } finally {
+            redis.close();
+        }
+    }
+
+    public Long expire(String key, int seconds) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            return redis.expire(SafeEncoder.encode(key), seconds);
+        } finally {
+            redis.close();
+        }
+    }
+
+    public String hgetString(String key, String field) {
+        Jedis redis = null;
+        try {
+            redis = redisPool.getResource();
+            byte[] hget = redis.hget(key.getBytes(), field.getBytes());
+            if (hget == null || hget.length == 0)
+                return null;
+            return new String(hget);
+        } finally {
+            redis.close();
+        }
     }
 }
