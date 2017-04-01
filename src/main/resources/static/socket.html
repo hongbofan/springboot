@@ -16,14 +16,14 @@
     });
     var stompClient = null;
     function connect() {
-        var socket = new SockJS('ws://localhost:8443');
-        stompClient = Stomp.over(socket);
+        var socket = new SockJS('http://localhost:7878');
+        stompClient = Stomp.overWS("ws://localhost:7878");
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            sendName();
-            stompClient.subscribe('/subscribe/cipher', function (greeting) {
-                $("#socket").html(greeting.body);
-            });
+            //sendName();
+            //stompClient.subscribe('/subscribe/cipher', function (greeting) {
+            //    $("#socket").html(greeting.body);
+            //});
         });
     }
     function sendName() {

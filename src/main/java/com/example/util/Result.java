@@ -1,4 +1,4 @@
-package com.example.Util;
+package com.example.util;
 
 
 import com.alibaba.fastjson.annotation.JSONField;

@@ -27,7 +27,7 @@ public class HelloServer {
     private HelloServerInitializer helloServerInitializer;
 
     //程序初始方法入口注解，提示spring这个程序先执行这里
-    @PostConstruct
+    //@PostConstruct
     public void serverStart() throws InterruptedException{
 
         log.info("###########################################");

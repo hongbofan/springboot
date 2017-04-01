@@ -25,3 +25,5 @@ nbdist/
 
 ### logfile ###
 catalina.*
+
+*.preperties

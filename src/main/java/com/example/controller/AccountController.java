@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.Util.Result;
+import com.example.util.Result;
 import com.example.service.AccountInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.Util.Result;
+import com.example.util.Result;
 import com.example.repositories.ProtectTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

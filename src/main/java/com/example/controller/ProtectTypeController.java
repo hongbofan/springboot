@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.Util.Result;
+import com.example.util.Result;
 import com.example.service.ProtectTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

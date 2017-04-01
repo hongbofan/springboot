@@ -84,7 +84,13 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.9.Final</version>
+			<version>5.0.0.Alpha2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.dyuproject.protostuff/protostuff-core -->
+		<dependency>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 
@@ -93,6 +99,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.example.DemoApplication</mainClass>
+				</configuration>
 				<dependencies>
 					<!-- 热部署 -->
 					<dependency>
